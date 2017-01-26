@@ -4,7 +4,6 @@ This is the template server side for ChatBot
 from bottle import route, run, template, static_file, request
 import json
 
-
 @route('/', method='GET')
 def index():
     return template("chatbot.html")
@@ -12,8 +11,19 @@ def index():
 
 @route("/chat", method='POST')
 def chat():
+    GREETING_WORDS = ["hello", "hi", "hey", "yo", "heya", "shalom"]
+    QUESTION_WORDS = ["who","what","where","when","why","how"]
     user_message = request.POST.get('msg')
-    return json.dumps({"animation": "inlove", "msg": user_message})
+    return_message = "I'm sorry, I don't understand"
+    words = user_message.split()
+    for word in words:
+        if word.lower() in GREETING_WORDS:
+            return_message = "Hi, how can I help you?"
+            return json.dumps({"animation": "excited", "msg": return_message})
+        elif word.lower() in QUESTION_WORDS or word[-1] == "?":
+            return_message = "That's a great question."
+            return json.dumps({"animation": "confused", "msg": return_message})
+    return json.dumps({"animation": "confused", "msg": return_message})
 
 
 @route("/test", method='POST')
