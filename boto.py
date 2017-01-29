@@ -84,7 +84,8 @@ def question(words, user_message):
 
     if "what" in user_message:
         if "should i ask you" in user_message:
-            return "Ask me "+random.choice(options)
+            option = random.choice(options)
+            return "Ask me "+option, "dancing"
         elif "time" in user_message:
             #TODO:get rid of miliseconds
             continuation = "the time is "+str(datetime.time(datetime.now()))
