@@ -46,6 +46,7 @@ def greeting(words, user_message):
     for word in variations:
         if word in user_message:
             name = " "+user_message.split(word + " ",1)[1].capitalize() +", "
+            break
         else:
             name = ""
     return "Hi,"+name+"how can I help you?", "waiting"
@@ -70,8 +71,6 @@ def question(words, user_message):
         weather = requests.get("http://api.openweathermap.org/data/2.5/weather?APPID=de595487072c551664a7a2fecdb43b95&q="+user_message[11:]+"&cnt=10&mode=json&units=metric")
         weather_today = json.loads(weather.content)
         return "Today will be "+weather_today["weather"][0]["description"]+" with a temperature of "+str(weather_today["main"]["temp"])+" in "+weather_today["name"], "giggling"
-    if any(word in WEATHER_WORDS for word in user_message):
-        return "I'd be happy to get that for you. Please say: 'Weather in [name of city]'", "takeoff"
     if "calculate" in user_message:
         for operator in math_operations:
             if operator in user_message:
@@ -83,12 +82,14 @@ def question(words, user_message):
                 return "I don't know how to calculate that, I'm sorry", "crying"
 
     if "what" in user_message:
-        if "should i ask you" in user_message:
+        if "should i ask" in user_message:
             option = random.choice(options)
             return "Ask me "+option, "dancing"
         elif "time" in user_message:
             #TODO:get rid of miliseconds
             continuation = "the time is "+str(datetime.time(datetime.now()))
+        elif any(word in user_message for word in WEATHER_WORDS):
+            return "I'd be happy to get that for you. Please say: 'Weather in [name of city]'", "takeoff"
         elif any(operator in math_operations for operator in user_message):
             continuation = 'if you want me to calculate it for you, say: "Calculate" followed by the thing you want me to calculate. For example: Calculate 4+4'
         else:
